@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>March Madness Pool — Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #E85D04;
+    --orange-light: #FF6B1A;
+    --navy: #0D1B2A;
+    --navy-mid: #1A2D42;
+    --navy-light: #253D59;
+    --gold: #F4A522;
+    --gold-dim: rgba(244,165,34,0.15);
+    --text: #EEF2F7;
+    --text-muted: #8BA3C1;
+    --text-dim: #4F6A87;
+    --border: rgba(255,255,255,0.07);
+    --row-hover: rgba(255,255,255,0.04);
+    --alive-green: #2DD4A0;
+    --elim-red: #F06565;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .header-left h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .header-left h1 span { color: var(--orange); }
+  .header-left .subtitle {
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .header-right { text-align: right; }
+  .refresh-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    justify-content: flex-end;
+  }
+  .pulse {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--alive-green);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+  .refresh-btn {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .refresh-btn:hover { background: var(--navy-light); color: var(--text); border-color: rgba(255,255,255,0.15); }
+  .countdown-bar { height: 3px; background: var(--navy-light); border-radius: 2px; margin-bottom: 28px; overflow: hidden; }
+  .countdown-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--gold)); border-radius: 2px; transition: width 1s linear; }
+  .state-msg {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .state-msg .sub {
+    margin-top: 10px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--text-dim);
+    text-transform: none;
+  }
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--navy-mid);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { border-bottom: 2px solid rgba(255,255,255,0.1); }
+  th {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 14px 12px;
+    text-align: left;
+    white-space: nowrap;
+    background: var(--navy-mid);
+  }
+  th:first-child { padding-left: 20px; }
+  th.num { text-align: center; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr.rank-1 { background: rgba(244,165,34,0.07); }
+  tbody tr.rank-2 { background: rgba(180,180,180,0.05); }
+  tbody tr.rank-3 { background: rgba(176,105,54,0.05); }
+  tbody tr.rank-1:hover { background: rgba(244,165,34,0.11); }
+  tbody tr.rank-2:hover { background: rgba(180,180,180,0.08); }
+  tbody tr.rank-3:hover { background: rgba(176,105,54,0.08); }
+  td { padding: 13px 12px; vertical-align: middle; white-space: nowrap; color: var(--text); }
+  td:first-child { padding-left: 20px; }
+  td.num { text-align: center; }
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 16px;
+  }
+  .rank-badge.gold   { background: var(--gold-dim); color: var(--gold); }
+  .rank-badge.silver { background: rgba(192,192,192,0.12); color: #C0C0C0; }
+  .rank-badge.bronze { background: rgba(176,105,54,0.15); color: #C07840; }
+  .rank-badge.plain  { background: transparent; color: var(--text-dim); }
+  .entry-cell { min-width: 140px; }
+  .entry-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: 0.3px; line-height: 1.2; }
+  .real-name { font-size: 12px; color: var(--text-muted); margin-top: 1px; font-weight: 400; }
+  .points { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--orange-light); letter-spacing: -0.5px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .badge-alive { background: rgba(45,212,160,0.12); color: var(--alive-green); border: 1px solid rgba(45,212,160,0.25); }
+  .badge-elim  { background: rgba(240,101,101,0.1);  color: var(--elim-red);    border: 1px solid rgba(240,101,101,0.2); }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .champion-name { font-weight: 600; font-size: 13px; }
+  .champion-none { color: var(--text-dim); font-style: italic; font-size: 12px; }
+  .tiebreak-val { font-weight: 600; }
+  .tiebreak-diff { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .seeds-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .seeds-toggle:hover { background: var(--row-hover); color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .seed-detail-row td { padding: 0; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); }
+  .seed-detail-row.hidden { display: none; }
+  .seed-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 20px; }
+  .seed-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    min-width: 200px;
+    max-width: 260px;
+  }
+  .seed-num { font-family: var(--font-display); font-weight: 700; font-size: 13px; color: var(--orange); min-width: 24px; }
+  .seed-label { color: var(--text-muted); margin-right: 2px; }
+  .seed-val { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .seed-pts { margin-left: auto; font-size: 11px; color: var(--alive-green); font-weight: 600; padding-left: 8px; }
+  footer { margin-top: 36px; text-align: center; font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; }
+  @media (max-width: 600px) {
+    .header-right { display: none; }
+    td.hide-mobile, th.hide-mobile { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <header>
+    <div class="header-left">
+      <h1>March <span>Madness</span></h1>
+      <div class="subtitle">Pool Leaderboard &nbsp;·&nbsp; 2026</div>
+    </div>
+    <div class="header-right">
+      <div class="refresh-status">
+        <div class="pulse"></div>
+        <span id="last-updated">Loading...</span>
+      </div>
+      <button class="refresh-btn" onclick="loadData()">↻ &nbsp;Refresh now</button>
+    </div>
+  </header>
+
+  <div class="countdown-bar">
+    <div class="countdown-fill" id="countdown-fill" style="width:100%"></div>
+  </div>
+
+  <div id="content">
+    <div class="state-msg">Loading leaderboard...<div class="sub">Fetching data from Google Sheets</div></div>
+  </div>
+  <footer id="footer"></footer>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+//  CONFIGURATION — edit these two values
+// ════════════════════════════════════════════════
+const SHEET_ID   = '1QxRD3dJGeWfYAdbIZIJsHcCsq8wY6TvI3R_a_-USFkM';
+const SHEET_NAME = 'LeaderboardData';
+const REFRESH_MS = 5 * 60 * 1000;
+// ════════════════════════════════════════════════
+
+// Column layout (0-indexed):
+// 0=Rank, 1=Entry Name, 2=Name, 3=Total Points, 4=Teams Alive, 5=Teams Eliminated,
+// 6=National Champion, 7=Tiebreak, 8=Tiebreak Diff,
+// 9=1 Seed, 10=Points, 11=2 Seed, 12=Points, 13=3 Seed, 14=Points ... (pairs every 2)
+
+let countdownInterval = null;
+let nextRefresh = Date.now() + REFRESH_MS;
+
+function sheetUrl() {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&t=${Date.now()}`;
+}
+
+async function loadData() {
+  try {
+    const res  = await fetch(sheetUrl());
+    const text = await res.text();
+    const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+    if (!match) throw new Error('Unexpected response format from Google Sheets.');
+    const json = JSON.parse(match[1]);
+    const rows = json.table && json.table.rows;
+    if (!rows || rows.length === 0) {
+      showError('No data found', 'Make sure your sheet is published to the web and the tab name is exactly "LeaderboardData".');
+      return;
+    }
+    renderTable(rows);
+    nextRefresh = Date.now() + REFRESH_MS;
+    startCountdown();
+    const now = new Date();
+    document.getElementById('last-updated').textContent =
+      'Updated ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  } catch(e) {
+    showError('Could not load data', e.message);
+  }
+}
+
+function cellVal(row, idx) {
+  try {
+    const c = row.c[idx];
+    return (c && c.v != null) ? c.v : '';
+  } catch { return ''; }
+}
+
+function renderTable(rows) {
+  // Skip header row if first cell is non-numeric text like "Rank"
+  let dataRows = rows;
+  const firstVal = String(cellVal(rows[0], 0));
+  if (isNaN(Number(firstVal)) && firstVal.toLowerCase().includes('rank')) {
+    dataRows = rows.slice(1);
+  }
+
+  let html = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th style="width:48px">Rank</th>
+      <th>Entry</th>
+      <th class="num">Points</th>
+      <th class="num hide-mobile">Alive</th>
+      <th class="num hide-mobile">Elim</th>
+      <th class="hide-mobile">Champion Pick</th>
+      <th class="num hide-mobile">Tiebreak</th>
+      <th style="width:90px">Seeds</th>
+    </tr></thead>
+    <tbody>`;
+
+  dataRows.forEach((row, i) => {
+    const rank     = cellVal(row, 0);
+    const entry    = cellVal(row, 1);
+    const name     = cellVal(row, 2);
+    const pts      = cellVal(row, 3);
+    const alive    = cellVal(row, 4);
+    const elim     = cellVal(row, 5);
+    const champ    = cellVal(row, 6);
+    const tb       = cellVal(row, 7);
+    const tbDiff   = cellVal(row, 8);
+
+    // Seeds are in pairs starting at col 9: [pick, points, pick, points, ...]
+    const seeds = [];
+    for (let s = 0; s < 16; s++) {
+      const colPick = 9 + s * 2;
+      const colPts  = 9 + s * 2 + 1;
+      seeds.push({
+        num:  s + 1,
+        pick: cellVal(row, colPick),
+        pts:  cellVal(row, colPts)
+      });
+    }
+
+    const rankNum = parseInt(rank);
+    let rankClass = '', badgeClass = 'plain';
+    if (rankNum === 1)      { rankClass='rank-1'; badgeClass='gold'; }
+    else if (rankNum === 2) { rankClass='rank-2'; badgeClass='silver'; }
+    else if (rankNum === 3) { rankClass='rank-3'; badgeClass='bronze'; }
+
+    const rowId = `sd-${i}`;
+
+    html += `
+    <tr class="${rankClass}">
+      <td><span class="rank-badge ${badgeClass}">${rank || '—'}</span></td>
+      <td class="entry-cell">
+        <div class="entry-name">${esc(entry) || esc(name) || '—'}</div>
+        ${(entry && name && String(entry).trim() !== String(name).trim())
+          ? `<div class="real-name">${esc(name)}</div>` : ''}
+      </td>
+      <td class="num"><span class="points">${pts !== '' ? Number(pts).toLocaleString() : '—'}</span></td>
+      <td class="num hide-mobile">
+        ${alive !== '' ? `<span class="badge badge-alive"><span class="badge-dot"></span>${alive}</span>` : '—'}
+      </td>
+      <td class="num hide-mobile">
+        ${elim !== '' ? `<span class="badge badge-elim"><span class="badge-dot"></span>${elim}</span>` : '—'}
+      </td>
+      <td class="hide-mobile">
+        ${champ ? `<span class="champion-name">${esc(champ)}</span>` : '<span class="champion-none">none</span>'}
+      </td>
+      <td class="num hide-mobile">
+        ${tb !== '' ? `<div class="tiebreak-val">${tb}</div>${tbDiff !== '' ? `<div class="tiebreak-diff">±${tbDiff}</div>` : ''}` : '—'}
+      </td>
+      <td>
+        <button class="seeds-toggle" onclick="toggleSeeds('${rowId}')">Seeds ▾</button>
+      </td>
+    </tr>
+    <tr id="${rowId}" class="seed-detail-row hidden">
+      <td colspan="8">
+        <div class="seed-grid">
+          ${seeds.map(s => `
+            <div class="seed-item">
+              <span class="seed-num">#${s.num}</span>
+              <span class="seed-val">${s.pick ? esc(s.pick) : '<em style="color:var(--text-dim)">—</em>'}</span>
+              ${s.pts !== '' && s.pts !== 0 ? `<span class="seed-pts">+${s.pts}</span>` : ''}
+            </div>`).join('')}
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table></div>';
+  document.getElementById('content').innerHTML = html;
+  document.getElementById('footer').textContent =
+    `${dataRows.length} entries · Auto-refreshes every 5 minutes`;
+}
+
+function toggleSeeds(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+
+function showError(title, sub) {
+  document.getElementById('content').innerHTML = `
+    <div class="state-msg">${esc(title)}<div class="sub">${esc(sub)}</div></div>`;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function startCountdown() {
+  clearInterval(countdownInterval);
+  const fill = document.getElementById('countdown-fill');
+  countdownInterval = setInterval(() => {
+    const remaining = Math.max(0, nextRefresh - Date.now());
+    fill.style.width = ((remaining / REFRESH_MS) * 100) + '%';
+    if (remaining === 0) { clearInterval(countdownInterval); loadData(); }
+  }, 1000);
+}
+
+loadData();
+</script>
+</body>
+</html>
