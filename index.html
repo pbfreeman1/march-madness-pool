@@ -8,18 +8,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* ─── CONFIG: paste your Google Sheets JSON URL below ─── */
-  /* See setup instructions in the README / comments below  */
-
   :root {
     --orange: #E85D04;
     --orange-light: #FF6B1A;
-    --orange-dim: rgba(232, 93, 4, 0.12);
     --navy: #0D1B2A;
     --navy-mid: #1A2D42;
     --navy-light: #253D59;
     --gold: #F4A522;
-    --gold-dim: rgba(244, 165, 34, 0.15);
+    --gold-dim: rgba(244,165,34,0.15);
     --text: #EEF2F7;
     --text-muted: #8BA3C1;
     --text-dim: #4F6A87;
@@ -30,9 +26,7 @@
     --font-display: 'Barlow Condensed', sans-serif;
     --font-body: 'Barlow', sans-serif;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--navy);
     color: var(--text);
@@ -40,24 +34,14 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-
-  /* ─── BACKGROUND PATTERN ─── */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        -45deg,
-        transparent,
-        transparent 40px,
-        rgba(255,255,255,0.012) 40px,
-        rgba(255,255,255,0.012) 41px
-      );
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
     pointer-events: none;
     z-index: 0;
   }
-/* ─── HEADER ─── */
   .page-wrap {
     position: relative;
     z-index: 1;
@@ -65,19 +49,16 @@
     margin: 0 auto;
     padding: 32px 20px 60px;
   }
-
-  /* ─── HEADER ─── */
   header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     padding-bottom: 24px;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
   }
-
   .header-left h1 {
     font-family: var(--font-display);
     font-size: clamp(36px, 6vw, 60px);
@@ -87,7 +68,6 @@
     text-transform: uppercase;
   }
   .header-left h1 span { color: var(--orange); }
-
   .header-left .subtitle {
     margin-top: 6px;
     font-family: var(--font-display);
@@ -97,11 +77,7 @@
     text-transform: uppercase;
     color: var(--text-muted);
   }
-
-  .header-right {
-    text-align: right;
-  }
-
+  .header-right { text-align: right; }
   .refresh-status {
     display: flex;
     align-items: center;
@@ -111,7 +87,6 @@
     margin-bottom: 8px;
     justify-content: flex-end;
   }
-
   .pulse {
     width: 8px; height: 8px;
     border-radius: 50%;
@@ -119,12 +94,7 @@
     animation: pulse 2s ease-in-out infinite;
     flex-shrink: 0;
   }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
   .refresh-btn {
     background: var(--navy-mid);
     border: 1px solid var(--border);
@@ -139,28 +109,9 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .refresh-btn:hover {
-    background: var(--navy-light);
-    color: var(--text);
-    border-color: rgba(255,255,255,0.15);
-  }
-
-  /* ─── COUNTDOWN ─── */
-  .countdown-bar {
-    height: 3px;
-    background: var(--navy-light);
-    border-radius: 2px;
-    margin-bottom: 28px;
-    overflow: hidden;
-  }
-  .countdown-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--orange), var(--gold));
-    border-radius: 2px;
-    transition: width 1s linear;
-  }
-
-  /* ─── ERROR / LOADING ─── */
+  .refresh-btn:hover { background: var(--navy-light); color: var(--text); border-color: rgba(255,255,255,0.15); }
+  .countdown-bar { height: 3px; background: var(--navy-light); border-radius: 2px; margin-bottom: 28px; overflow: hidden; }
+  .countdown-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--gold)); border-radius: 2px; transition: width 1s linear; }
   .state-msg {
     text-align: center;
     padding: 80px 20px;
@@ -180,8 +131,6 @@
     color: var(--text-dim);
     text-transform: none;
   }
-
-  /* ─── TABLE WRAPPER ─── */
   .table-wrap {
     width: 100%;
     overflow-x: auto;
@@ -189,18 +138,8 @@
     border: 1px solid var(--border);
     background: var(--navy-mid);
   }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-
-  /* ─── THEAD ─── */
-  thead tr {
-    border-bottom: 2px solid rgba(255,255,255,0.1);
-  }
-
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { border-bottom: 2px solid rgba(255,255,255,0.1); }
   th {
     font-family: var(--font-display);
     font-weight: 700;
@@ -213,37 +152,20 @@
     white-space: nowrap;
     background: var(--navy-mid);
   }
-
-  th:first-child { padding-left: 20px; border-radius: 10px 0 0 0; }
-  th:last-child  { border-radius: 0 10px 0 0; }
+  th:first-child { padding-left: 20px; }
   th.num { text-align: center; }
-
-  /* ─── TBODY ─── */
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.12s;
-  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--row-hover); }
-
-  /* TOP 3 ACCENTS */
   tbody tr.rank-1 { background: rgba(244,165,34,0.07); }
   tbody tr.rank-2 { background: rgba(180,180,180,0.05); }
   tbody tr.rank-3 { background: rgba(176,105,54,0.05); }
   tbody tr.rank-1:hover { background: rgba(244,165,34,0.11); }
   tbody tr.rank-2:hover { background: rgba(180,180,180,0.08); }
   tbody tr.rank-3:hover { background: rgba(176,105,54,0.08); }
-
-  td {
-    padding: 13px 12px;
-    vertical-align: middle;
-    white-space: nowrap;
-    color: var(--text);
-  }
+  td { padding: 13px 12px; vertical-align: middle; white-space: nowrap; color: var(--text); }
   td:first-child { padding-left: 20px; }
   td.num { text-align: center; }
-
-  /* ─── RANK CELL ─── */
   .rank-badge {
     display: inline-flex;
     align-items: center;
@@ -254,75 +176,22 @@
     font-weight: 800;
     font-size: 16px;
   }
-  .rank-badge.gold   { background: var(--gold-dim);  color: var(--gold); }
+  .rank-badge.gold   { background: var(--gold-dim); color: var(--gold); }
   .rank-badge.silver { background: rgba(192,192,192,0.12); color: #C0C0C0; }
-  .rank-badge.bronze { background: rgba(176,105,54,0.15);  color: #C07840; }
+  .rank-badge.bronze { background: rgba(176,105,54,0.15); color: #C07840; }
   .rank-badge.plain  { background: transparent; color: var(--text-dim); }
-
-  /* ─── ENTRY / NAME ─── */
   .entry-cell { min-width: 140px; }
-  .entry-name {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 0.3px;
-    line-height: 1.2;
-  }
-  .real-name {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 1px;
-    font-weight: 400;
-  }
-
-  /* ─── POINTS ─── */
-  .points {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 22px;
-    color: var(--orange-light);
-    letter-spacing: -0.5px;
-  }
-
-  /* ─── ALIVE / ELIM BADGES ─── */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 9px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .badge-alive {
-    background: rgba(45,212,160,0.12);
-    color: var(--alive-green);
-    border: 1px solid rgba(45,212,160,0.25);
-  }
-  .badge-elim {
-    background: rgba(240,101,101,0.1);
-    color: var(--elim-red);
-    border: 1px solid rgba(240,101,101,0.2);
-  }
+  .entry-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; letter-spacing: 0.3px; line-height: 1.2; }
+  .real-name { font-size: 12px; color: var(--text-muted); margin-top: 1px; font-weight: 400; }
+  .points { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--orange-light); letter-spacing: -0.5px; }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .badge-alive { background: rgba(45,212,160,0.12); color: var(--alive-green); border: 1px solid rgba(45,212,160,0.25); }
+  .badge-elim  { background: rgba(240,101,101,0.1);  color: var(--elim-red);    border: 1px solid rgba(240,101,101,0.2); }
   .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-
-  /* ─── CHAMPION CELL ─── */
-  .champion-name {
-    font-weight: 600;
-    font-size: 13px;
-  }
+  .champion-name { font-weight: 600; font-size: 13px; }
   .champion-none { color: var(--text-dim); font-style: italic; font-size: 12px; }
-
-  /* ─── TIEBREAK ─── */
   .tiebreak-val { font-weight: 600; }
-  .tiebreak-diff {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-  }
-
-  /* ─── SEEDS (expandable) ─── */
+  .tiebreak-diff { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
   .seeds-toggle {
     background: none;
     border: 1px solid var(--border);
@@ -339,20 +208,9 @@
     white-space: nowrap;
   }
   .seeds-toggle:hover { background: var(--row-hover); color: var(--text); border-color: rgba(255,255,255,0.2); }
-
-  /* ─── SEED DETAIL ROW ─── */
-  .seed-detail-row td {
-    padding: 0;
-    background: rgba(0,0,0,0.2);
-    border-top: 1px solid var(--border);
-  }
+  .seed-detail-row td { padding: 0; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); }
   .seed-detail-row.hidden { display: none; }
-  .seed-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 14px 20px;
-  }
+  .seed-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 20px; }
   .seed-item {
     display: flex;
     align-items: center;
@@ -362,38 +220,14 @@
     border-radius: 6px;
     padding: 5px 10px;
     font-size: 12px;
-    min-width: 120px;
+    min-width: 200px;
+    max-width: 260px;
   }
-  .seed-num {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--orange);
-    min-width: 24px;
-  }
+  .seed-num { font-family: var(--font-display); font-weight: 700; font-size: 13px; color: var(--orange); min-width: 24px; }
   .seed-label { color: var(--text-muted); margin-right: 2px; }
-  .seed-val { color: var(--text); font-weight: 500; }
-
-  /* ─── FOOTER ─── */
-  footer {
-    margin-top: 36px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-dim);
-    letter-spacing: 0.5px;
-  }
-
-  /* ─── SKELETON LOADING ─── */
-  .skel {
-    background: linear-gradient(90deg, var(--navy-light) 25%, var(--navy-mid) 50%, var(--navy-light) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 4px;
-    height: 14px;
-  }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-  /* ─── RESPONSIVE ─── */
+  .seed-val { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .seed-pts { margin-left: auto; font-size: 11px; color: var(--alive-green); font-weight: 600; padding-left: 8px; }
+  footer { margin-top: 36px; text-align: center; font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; }
   @media (max-width: 600px) {
     .header-right { display: none; }
     td.hide-mobile, th.hide-mobile { display: none; }
@@ -402,11 +236,10 @@
 </head>
 <body>
 <div class="page-wrap">
-
   <header>
     <div class="header-left">
       <h1>March <span>Madness</span></h1>
-      <div class="subtitle">Pool Leaderboard &nbsp;·&nbsp; 2025</div>
+      <div class="subtitle">Pool Leaderboard &nbsp;·&nbsp; 2026</div>
     </div>
     <div class="header-right">
       <div class="refresh-status">
@@ -422,139 +255,121 @@
   </div>
 
   <div id="content">
-    <div class="state-msg">
-      Loading leaderboard...
-      <div class="sub">Fetching data from Google Sheets</div>
-    </div>
+    <div class="state-msg">Loading leaderboard...<div class="sub">Fetching data from Google Sheets</div></div>
   </div>
-
   <footer id="footer"></footer>
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════
-//  CONFIGURATION — edit these two lines
-// ════════════════════════════════════════════════════════
-
+// ════════════════════════════════════════════════
+//  CONFIGURATION — edit these two values
+// ════════════════════════════════════════════════
 const SHEET_ID   = '1QxRD3dJGeWfYAdbIZIJsHcCsq8wY6TvI3R_a_-USFkM';
 const SHEET_NAME = 'LeaderboardData';
-const REFRESH_MS = 5 * 60 * 1000;             // refresh every 5 minutes
+const REFRESH_MS = 5 * 60 * 1000;
+// ════════════════════════════════════════════════
 
-// ════════════════════════════════════════════════════════
-//  COLUMN MAPPING
-//  These match the order of columns in YOUR sheet exactly.
-//  Zero-indexed (first column = 0).
-// ════════════════════════════════════════════════════════
-const COL = {
-  rank:        0,
-  entryName:   1,
-  name:        2,
-  totalPts:    3,
-  alive:       4,
-  eliminated:  5,
-  champion:    6,
-  tiebreak:    7,
-  tiebreakDiff:8,
-  seedStart:   9,   // seeds 1-16 are columns 9 through 24
-};
-
-// ════════════════════════════════════════════════════════
+// Column layout (0-indexed):
+// 0=Rank, 1=Entry Name, 2=Name, 3=Total Points, 4=Teams Alive, 5=Teams Eliminated,
+// 6=National Champion, 7=Tiebreak, 8=Tiebreak Diff,
+// 9=1 Seed, 10=Points, 11=2 Seed, 12=Points, 13=3 Seed, 14=Points ... (pairs every 2)
 
 let countdownInterval = null;
 let nextRefresh = Date.now() + REFRESH_MS;
 
 function sheetUrl() {
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&t=${Date.now()}`;
 }
 
 async function loadData() {
   try {
-    const res  = await fetch(sheetUrl() + '&t=' + Date.now());
+    const res  = await fetch(sheetUrl());
     const text = await res.text();
-    // Strip Google's JSONP wrapper: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
-    const rows = json.table.rows;
-
+    const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/);
+    if (!match) throw new Error('Unexpected response format from Google Sheets.');
+    const json = JSON.parse(match[1]);
+    const rows = json.table && json.table.rows;
     if (!rows || rows.length === 0) {
-      showError('No data found', 'Make sure your sheet is published and the tab name matches.');
+      showError('No data found', 'Make sure your sheet is published to the web and the tab name is exactly "LeaderboardData".');
       return;
     }
-
     renderTable(rows);
     nextRefresh = Date.now() + REFRESH_MS;
     startCountdown();
-
     const now = new Date();
     document.getElementById('last-updated').textContent =
       'Updated ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
   } catch(e) {
-    showError('Could not load data', 'Check that your SHEET_ID is correct and the sheet is published to web. ' + e.message);
+    showError('Could not load data', e.message);
   }
 }
 
 function cellVal(row, idx) {
-  try { return row.c[idx] && row.c[idx].v != null ? row.c[idx].v : ''; }
-  catch { return ''; }
+  try {
+    const c = row.c[idx];
+    return (c && c.v != null) ? c.v : '';
+  } catch { return ''; }
 }
 
 function renderTable(rows) {
-  // Skip header row if it exists (first cell is "Rank" or similar text)
+  // Skip header row if first cell is non-numeric text like "Rank"
   let dataRows = rows;
-  const firstVal = cellVal(rows[0], COL.rank);
-  if (isNaN(Number(firstVal)) && String(firstVal).toLowerCase().includes('rank')) {
+  const firstVal = String(cellVal(rows[0], 0));
+  if (isNaN(Number(firstVal)) && firstVal.toLowerCase().includes('rank')) {
     dataRows = rows.slice(1);
   }
 
-  let html = `
-  <div class="table-wrap">
-  <table>
-    <thead>
-      <tr>
-        <th style="width:48px">Rank</th>
-        <th>Entry</th>
-        <th class="num">Points</th>
-        <th class="num hide-mobile">Alive</th>
-        <th class="num hide-mobile">Elim</th>
-        <th class="hide-mobile">Champion Pick</th>
-        <th class="num hide-mobile">Tiebreak</th>
-        <th style="width:90px">Seeds</th>
-      </tr>
-    </thead>
+  let html = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th style="width:48px">Rank</th>
+      <th>Entry</th>
+      <th class="num">Points</th>
+      <th class="num hide-mobile">Alive</th>
+      <th class="num hide-mobile">Elim</th>
+      <th class="hide-mobile">Champion Pick</th>
+      <th class="num hide-mobile">Tiebreak</th>
+      <th style="width:90px">Seeds</th>
+    </tr></thead>
     <tbody>`;
 
   dataRows.forEach((row, i) => {
-    const rank      = cellVal(row, COL.rank);
-    const entry     = cellVal(row, COL.entryName);
-    const name      = cellVal(row, COL.name);
-    const pts       = cellVal(row, COL.totalPts);
-    const alive     = cellVal(row, COL.alive);
-    const elim      = cellVal(row, COL.eliminated);
-    const champ     = cellVal(row, COL.champion);
-    const tiebreak  = cellVal(row, COL.tiebreak);
-    const tbDiff    = cellVal(row, COL.tiebreakDiff);
+    const rank     = cellVal(row, 0);
+    const entry    = cellVal(row, 1);
+    const name     = cellVal(row, 2);
+    const pts      = cellVal(row, 3);
+    const alive    = cellVal(row, 4);
+    const elim     = cellVal(row, 5);
+    const champ    = cellVal(row, 6);
+    const tb       = cellVal(row, 7);
+    const tbDiff   = cellVal(row, 8);
 
+    // Seeds are in pairs starting at col 9: [pick, points, pick, points, ...]
     const seeds = [];
-    for (let s = 1; s <= 16; s++) {
-      seeds.push({ num: s, val: cellVal(row, COL.seedStart + s - 1) });
+    for (let s = 0; s < 16; s++) {
+      const colPick = 9 + s * 2;
+      const colPts  = 9 + s * 2 + 1;
+      seeds.push({
+        num:  s + 1,
+        pick: cellVal(row, colPick),
+        pts:  cellVal(row, colPts)
+      });
     }
 
     const rankNum = parseInt(rank);
-    let rankClass = '';
-    let badgeClass = 'plain';
-    let medal = '';
-    if (rankNum === 1) { rankClass='rank-1'; badgeClass='gold';   medal='🥇'; }
-    else if (rankNum === 2) { rankClass='rank-2'; badgeClass='silver'; medal='🥈'; }
-    else if (rankNum === 3) { rankClass='rank-3'; badgeClass='bronze'; medal='🥉'; }
+    let rankClass = '', badgeClass = 'plain';
+    if (rankNum === 1)      { rankClass='rank-1'; badgeClass='gold'; }
+    else if (rankNum === 2) { rankClass='rank-2'; badgeClass='silver'; }
+    else if (rankNum === 3) { rankClass='rank-3'; badgeClass='bronze'; }
 
-    const rowId = `row-${i}`;
+    const rowId = `sd-${i}`;
 
     html += `
-    <tr class="${rankClass}" onclick="toggleSeeds('${rowId}')">
+    <tr class="${rankClass}">
       <td><span class="rank-badge ${badgeClass}">${rank || '—'}</span></td>
       <td class="entry-cell">
         <div class="entry-name">${esc(entry) || esc(name) || '—'}</div>
-        ${entry && name && entry !== name ? `<div class="real-name">${esc(name)}</div>` : ''}
+        ${(entry && name && String(entry).trim() !== String(name).trim())
+          ? `<div class="real-name">${esc(name)}</div>` : ''}
       </td>
       <td class="num"><span class="points">${pts !== '' ? Number(pts).toLocaleString() : '—'}</span></td>
       <td class="num hide-mobile">
@@ -567,13 +382,10 @@ function renderTable(rows) {
         ${champ ? `<span class="champion-name">${esc(champ)}</span>` : '<span class="champion-none">none</span>'}
       </td>
       <td class="num hide-mobile">
-        ${tiebreak !== '' ? `
-          <div class="tiebreak-val">${tiebreak}</div>
-          ${tbDiff !== '' ? `<div class="tiebreak-diff">±${tbDiff}</div>` : ''}
-        ` : '—'}
+        ${tb !== '' ? `<div class="tiebreak-val">${tb}</div>${tbDiff !== '' ? `<div class="tiebreak-diff">±${tbDiff}</div>` : ''}` : '—'}
       </td>
       <td>
-        <button class="seeds-toggle" onclick="event.stopPropagation();toggleSeeds('${rowId}')">Seeds ▾</button>
+        <button class="seeds-toggle" onclick="toggleSeeds('${rowId}')">Seeds ▾</button>
       </td>
     </tr>
     <tr id="${rowId}" class="seed-detail-row hidden">
@@ -581,9 +393,9 @@ function renderTable(rows) {
         <div class="seed-grid">
           ${seeds.map(s => `
             <div class="seed-item">
-              <span class="seed-num">${s.num}</span>
-              <span class="seed-label">seed:</span>
-              <span class="seed-val">${s.val || '<em style="color:var(--text-dim)">—</em>'}</span>
+              <span class="seed-num">#${s.num}</span>
+              <span class="seed-val">${s.pick ? esc(s.pick) : '<em style="color:var(--text-dim)">—</em>'}</span>
+              ${s.pts !== '' && s.pts !== 0 ? `<span class="seed-pts">+${s.pts}</span>` : ''}
             </div>`).join('')}
         </div>
       </td>
@@ -593,7 +405,7 @@ function renderTable(rows) {
   html += '</tbody></table></div>';
   document.getElementById('content').innerHTML = html;
   document.getElementById('footer').textContent =
-    `${dataRows.length} entries · Refreshes every 5 minutes`;
+    `${dataRows.length} entries · Auto-refreshes every 5 minutes`;
 }
 
 function toggleSeeds(id) {
@@ -603,14 +415,13 @@ function toggleSeeds(id) {
 
 function showError(title, sub) {
   document.getElementById('content').innerHTML = `
-    <div class="state-msg">
-      ${esc(title)}
-      <div class="sub">${esc(sub)}</div>
-    </div>`;
+    <div class="state-msg">${esc(title)}<div class="sub">${esc(sub)}</div></div>`;
 }
 
 function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function startCountdown() {
@@ -618,16 +429,11 @@ function startCountdown() {
   const fill = document.getElementById('countdown-fill');
   countdownInterval = setInterval(() => {
     const remaining = Math.max(0, nextRefresh - Date.now());
-    const pct = (remaining / REFRESH_MS) * 100;
-    fill.style.width = pct + '%';
-    if (remaining === 0) {
-      clearInterval(countdownInterval);
-      loadData();
-    }
+    fill.style.width = ((remaining / REFRESH_MS) * 100) + '%';
+    if (remaining === 0) { clearInterval(countdownInterval); loadData(); }
   }, 1000);
 }
 
-// ─── Initial load ───
 loadData();
 </script>
 </body>
